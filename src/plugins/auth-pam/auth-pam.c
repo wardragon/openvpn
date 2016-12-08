@@ -109,6 +109,7 @@ struct user_pass {
   char username[128];
   char password[128];
   char common_name[128];
+  char remote[128];
 
   const struct name_value_list *name_value_list;
 };
