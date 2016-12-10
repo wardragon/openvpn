@@ -605,7 +605,7 @@ pam_auth (const char *service, const struct user_pass *up)
   if (status == PAM_SUCCESS)
     {
       /* Set PAM_RHOST environment variable */
-      if (up->remote)
+      if (*(up->remote))
 	status = pam_set_item(pamh, PAM_RHOST, up->remote);
       /* Call PAM to verify username/password */
       if (status == PAM_SUCCESS)
