@@ -409,7 +409,7 @@ openvpn_plugin_func_v1 (openvpn_plugin_handle_t handle, const int type, const ch
       const char *username = get_env ("username", envp);
       const char *password = get_env ("password", envp);
       const char *common_name = get_env ("common_name", envp) ? get_env ("common_name", envp) : "";
-      const char *remote = get_env("remote", envp);
+      const char *remote = get_env("untrusted_ip6", envp) ? get_env("untrusted_ip6", envp) : get_env("untrusted_ip", envp);
 
       if (username && strlen (username) > 0 && password)
 	{
@@ -689,7 +689,8 @@ pam_server (int fd, const char *service, int verb, const struct name_value_list 
 	case COMMAND_VERIFY:
 	  if (recv_string (fd, up.username, sizeof (up.username)) == -1
 	      || recv_string (fd, up.password, sizeof (up.password)) == -1
-	      || recv_string (fd, up.common_name, sizeof (up.common_name)) == -1)
+	      || recv_string (fd, up.common_name, sizeof (up.common_name)) == -1
+	      || recv_string (fd, up.remote, sizeof (up.remote)) == -1)
 	    {
 	      fprintf (stderr, "AUTH-PAM: BACKGROUND: read error on command channel: code=%d, exiting\n",
 		       command);
@@ -703,10 +704,7 @@ pam_server (int fd, const char *service, int verb, const struct name_value_list 
 		       up.username, up.password);
 #else
 	      fprintf (stderr, "AUTH-PAM: BACKGROUND: USER: %s\n", up.username);
-	      if ( recv_string (fd, up.remote, sizeof (up.remote)) == -1 )
-	        {
-	          fprintf (stderr, "AUTH-PAM: BACKGROUND: missing remote string\n");
-	        }
+	      fprintf (stderr, "AUTH-PAM: BACKGROUND: REMOTE: %s\n", up.remote);
 #endif
 	    }
 
